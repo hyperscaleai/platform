@@ -1,0 +1,1 @@
+export BACKUP_PATH=/mnt/data1/backup

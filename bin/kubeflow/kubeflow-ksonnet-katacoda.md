@@ -1,0 +1,1 @@
+https://github.com/katacoda/kubeflow-ksonnet/blob/master/user_guide.md#minikube

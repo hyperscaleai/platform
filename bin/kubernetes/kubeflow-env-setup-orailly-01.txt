@@ -1,0 +1,56 @@
+## https://github.com/dwhitena/oreilly-ai-k8s-tutorial
+# https://github.com/ksonnet/ksonnet
+# https://tutorials.ubuntu.com/tutorial/get-started-kubeflow
+
+wget https://github.com/ksonnet/ksonnet/releases/download/v0.13.1/ks_0.13.1_linux_amd64.tar.gz
+sudo mv /usr/bin/ks
+
+kubectl get all
+
+git clone https://github.com/dwhitena/oreilly-ai-k8s-tutorial.git
+
+
+# Deploy KubeFlow
+
+NAMESPACE=kubeflow
+kubectl create namespace ${NAMESPACE}
+
+sudo apt-get install ksonnet
+
+APP_NAME=my-kubeflow
+ks init ${APP_NAME}
+
+INFO Using context "minikube" from kubeconfig file "/home/constantine/.kube/config"
+INFO Creating environment "default" with namespace "default", pointing to "version:v1.12.4" cluster at address "https://192.168.99.100:8443"
+INFO Generating ksonnet-lib data at path '/home/constantine/space/src/hyperscaleai/3rdparty/oreilly-ai-k8s-tutorial/my-kubeflow/lib/ksonnet-lib/v1.12.4'INFO Using context "minikube" from kubeconfig file "/home/constantine/.kube/config"
+INFO Creating environment "default" with namespace "default", pointing to "version:v1.12.4" cluster at address "https://192.168.99.100:8443"
+INFO Generating ksonnet-lib data at path '/home/constantine/space/src/hyperscaleai/3rdparty/oreilly-ai-k8s-tutorial/my-kubeflow/lib/ksonnet-lib/v1.12.4'
+
+cd ${APP_NAME}
+ks env set default --namespace ${NAMESPACE}
+
+export GITHUB_TOKEN=678cacac34dae4339d82f81a9a481e44bad1f1ea
+
+
+ks registry add kubeflow github.com/katacoda/kubeflow-ksonnet/tree/master/kubeflow
+ks pkg install kubeflow/core
+ks pkg install kubeflow/seldon
+ks pkg install kubeflow/pachyderm
+
+#Now we can deploy the core of KubeFlow:
+
+ks generate kubeflow-core kubeflow-core --namespace=${NAMESPACE}
+# INFO Writing component at '/home/pachrat/my-kubeflow/components/kubeflow-core.jsonnet'
+
+ks apply default -c kubeflow-core
+
+
+# https://github.com/kubeflow/tf-operator/blob/master/tf_job_design_doc.md
+# The goal is to make it easy to run TensorFlow training (and distributed training in particular) on Kubernetes (K8s).
+# I propose doing this by creating a K8s custom resource descriptor (CRD) and associated controller.
+# The CRD takes care of managing the K8s resources needed to run a training job.
+
+
+# You can then verify that KubeFlow was deployed successfully as follows:
+
+kubectl -n kubeflow get svc

@@ -1,0 +1,64 @@
+Links:
+Apache Spark on Kubernetes = https://www.youtube.com/watch?time_continue=42&v=0xRHONrWwvU
+
+Setting up Dev/Research Enivornment:
+
+curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube
+curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.12.4/bin/linux/amd64/kubectl && chmod +x kubectl && sudo cp kubectl /usr/local/bin/ && rm kubectl
+
+minikube start
+- OR
+minikube start --cpus 4 --memory 8192
+
+minikube config set WantKubectlDownloadMsg false
+========================================
+Starting local Kubernetes v1.12.4 cluster...
+Starting VM...
+Downloading Minikube ISO
+
+kubectl config use-context minikube
+
+kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.10 --port=8080
+kubectl expose deployment hello-minikube --type=NodePort
+
+minikube dashboard
+
+kubectl delete services hello-minikube
+kubectl delete deployment hello-minikube
+
+minikube stop
+
+minikube delete
+
+minikube service [-n NAMESPACE] [--url] NAME
+kubectl get service $SERVICE --output='jsonpath="{.spec.ports[0].nodePort}"'
+
+========
+Deploying Spark jobs on Kubernetes
+https://spark.apache.org/docs/latest/running-on-kubernetes.html
+
+
+
+
+
+https://itnext.io/running-spark-job-on-kubernetes-minikube-958cadaddd55
+
+kubectl proxy
+
+
+---
+# https://github.com/dwhitena/oreilly-ai-k8s-tutorial
+
+# https://itnext.io/running-spark-job-on-kubernetes-minikube-958cadaddd55
+
+## https://stackoverflow.com/questions/49331570/spark-2-3-minikube-kubernetes-windows-demo-sparkpi-not-found
+
+./bin/docker-image-tool.sh -m -t spark-docker build
+docker image ls
+
+spark-submit --master k8s://https://192.168.99.100:8443  --deploy-mode cluster --name spark-pi --class org.apache.spark.examples.SparkPi --conf spark.executor.instances=2 --conf spark.kubernetes.container.image=spark:spark-docker local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar
+
+ERROR ->
+Caused by: io.fabric8.kubernetes.client.KubernetesClientException: Failure executing: GET at: https://kubernetes.default.svc/api/v1/namespaces/default/pods/spark-pi-1547023932766-driver. Message: Forbidden!Configured service account doesn't have access. Service account may have been revoked. pods "spark-pi-1547023932766-driver" is forbidden: User "system:serviceaccount:default:default" cannot get resource "pods" in API group "" in the namespace "default".
+
+

@@ -1,0 +1,1 @@
+./spark-submit --master k8s://https://192.168.1.100:8443 --deploy-mode cluster --name spark-pi --class org.apache.spark.examples.SparkPi --conf spark.executor.instances=1 --conf spark.kubernetes.container.image=spark:spark --conf spark.kubernetes.driver.pod.name=spark-pi-driver local:///opt/spark/examples/jars/spark-examples_2.11-2.3.0.jar
