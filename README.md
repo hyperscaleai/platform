@@ -1,2 +1,2 @@
 # platform
-Petabyte Scale Real-time Distributed Deep Learning Platform
+AI on K8s 
